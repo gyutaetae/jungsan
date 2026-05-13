@@ -63,3 +63,20 @@ export type ExpenseSummary = {
   confirmedCount: number;
   byCategory: Record<ExpenseCategory, number>;
 };
+
+export type TaxPrepInput = {
+  totalIncomeAmount: number;
+  entries: LedgerEntry[];
+};
+
+export type TaxPrepSummary = {
+  totalIncomeAmount: number;
+  totalExpenseAmount: number;
+  estimatedIncomeAmount: number;
+  supplyAmount: number;
+  vatAmount: number;
+  needsReviewCount: number;
+  byCategory: Record<ExpenseCategory, number>;
+  byProofType: Record<ProofType, number>;
+  reviewItems: LedgerEntry[];
+};
