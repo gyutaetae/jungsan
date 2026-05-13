@@ -13,6 +13,7 @@ import {
   createSampleReceiptEntry,
 } from "../lib/ledger/sampleData";
 import { calculateExpenseSummary } from "../lib/ledger/summary";
+import { calculateTaxPrepSummary } from "../lib/taxPrep/summary";
 import { createId } from "../lib/utils/ids";
 import type { LedgerEntry, ProcessingItem } from "../types/ledger";
 
@@ -34,8 +35,13 @@ export default function Home() {
   const [entries, setEntries] = useState<LedgerEntry[]>([]);
   const [processingItems, setProcessingItems] = useState<ProcessingItem[]>([]);
   const [showDownloadWarning, setShowDownloadWarning] = useState(false);
+  const [totalIncomeAmount, setTotalIncomeAmount] = useState(0);
 
   const summary = useMemo(() => calculateExpenseSummary(entries), [entries]);
+  const taxPrepSummary = useMemo(
+    () => calculateTaxPrepSummary(totalIncomeAmount, entries),
+    [entries, totalIncomeAmount],
+  );
 
   function addSampleData() {
     setEntries((currentEntries) => [
@@ -265,6 +271,34 @@ export default function Home() {
     URL.revokeObjectURL(url);
   }
 
+  async function downloadTaxPrep() {
+    try {
+      const response = await fetch("/api/export-tax-prep", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ totalIncomeAmount, entries }),
+      });
+
+      if (!response.ok) {
+        return;
+      }
+
+      const blob = await response.blob();
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = "jeongsan-tax-prep-draft.xlsx";
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      URL.revokeObjectURL(url);
+    } catch {
+      // The tax prep export route is added in the next phase.
+    }
+  }
+
   function requestExport() {
     if (summary.needsReviewCount > 0) {
       setShowDownloadWarning(true);
@@ -314,7 +348,14 @@ export default function Home() {
             )}
           </div>
 
-          <SummaryPanel summary={summary} />
+          <SummaryPanel
+            summary={summary}
+            taxPrepSummary={taxPrepSummary}
+            totalIncomeAmount={totalIncomeAmount}
+            onTotalIncomeAmountChange={setTotalIncomeAmount}
+            onDownloadTaxPrep={downloadTaxPrep}
+            entryCount={entries.length}
+          />
         </section>
 
         <ExportBar
