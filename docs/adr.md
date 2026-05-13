@@ -59,3 +59,21 @@ Reason: Official form fidelity matters, but implementation must not stall on ext
 Decision: Use lime green as the single accent color, with mostly neutral UI.
 
 Reason: The service should feel approachable and unlike HomeTax, while still credible for tax preparation.
+
+## 11. Official HWP Files Are References Only
+
+Decision: Store the official HWP files under `templates/official/`, but do not parse, convert, or edit them at runtime.
+
+Reason: HWP editing in a Vercel/Node MVP adds format and deployment risk. Keeping the official files as references preserves the form baseline without making HWP processing part of the product surface.
+
+## 12. Generate Tax Prep XLSX Drafts
+
+Decision: Generate 신고 준비 문서 as `jeongsan-tax-prep-draft.xlsx` 검토용 초안, not as HWP output.
+
+Reason: The existing app already uses `exceljs`, and xlsx is easier for users to inspect before entering values in HomeTax. The product should clearly say 홈택스 입력 전 확인 필요 and avoid implying the draft can be filed as-is.
+
+## 13. User Enters Total Income
+
+Decision: Ask the user to enter `totalIncomeAmount` directly.
+
+Reason: The current inputs mainly capture expenses from receipts and transaction files. Inferring income from expense-side data would be unreliable and could create a false sense of tax accuracy.

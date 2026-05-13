@@ -1,0 +1,35 @@
+{
+  "project": "정산",
+  "task": "tax-prep",
+  "prompt": "하네스 시작해보자",
+  "totalPhases": 5,
+  "created_at": "2026-05-14T02:00:25+0900",
+  "phases": [
+    {
+      "phase": 0,
+      "name": "docs-official-files",
+      "status": "completed",
+      "started_at": "2026-05-14T02:03:34+0900"
+    },
+    {
+      "phase": 1,
+      "name": "tax-summary",
+      "status": "pending"
+    },
+    {
+      "phase": 2,
+      "name": "tax-ui",
+      "status": "pending"
+    },
+    {
+      "phase": 3,
+      "name": "tax-export",
+      "status": "pending"
+    },
+    {
+      "phase": 4,
+      "name": "verify-hardening",
+      "status": "pending"
+    }
+  ]
+}

@@ -73,6 +73,31 @@ export type ExpenseSummary = {
 };
 ```
 
+## TaxPrepInput
+
+```ts
+export type TaxPrepInput = {
+  totalIncomeAmount: number;
+  entries: LedgerEntry[];
+};
+```
+
+## TaxPrepSummary
+
+```ts
+export type TaxPrepSummary = {
+  totalIncomeAmount: number;
+  totalExpenseAmount: number;
+  estimatedIncomeAmount: number;
+  supplyAmount: number;
+  vatAmount: number;
+  needsReviewCount: number;
+  byCategory: Record<ExpenseCategory, number>;
+  byProofType: Record<ProofType, number>;
+  reviewItems: LedgerEntry[];
+};
+```
+
 ## Spreadsheet Import Columns
 
 Required:
@@ -97,3 +122,6 @@ Optional:
 - Do not infer tax amounts with a 10% reverse calculation.
 - Default `category = "기타경비"`.
 - Default `status = "needs_review"` for imported/extracted rows.
+- `totalIncomeAmount` is provided by the user and must not be inferred from expense entries.
+- `estimatedIncomeAmount = totalIncomeAmount - totalExpenseAmount`.
+- `reviewItems` includes entries where `status === "needs_review"` or `vatStatus !== "confirmed"`.
