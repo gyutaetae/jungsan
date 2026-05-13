@@ -36,7 +36,9 @@
     {
       "phase": 4,
       "name": "verify-hardening",
-      "status": "pending"
+      "status": "completed",
+      "started_at": "2026-05-14T02:14:28+0900",
+      "completed_at": "2026-05-14T02:16:00+0900"
     }
   ]
 }
