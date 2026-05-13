@@ -29,7 +29,9 @@
     {
       "phase": 3,
       "name": "tax-export",
-      "status": "pending"
+      "status": "completed",
+      "started_at": "2026-05-14T02:11:05+0900",
+      "completed_at": "2026-05-14T02:13:56+0900"
     },
     {
       "phase": 4,
