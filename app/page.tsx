@@ -1,0 +1,330 @@
+"use client";
+
+import { useMemo, useState } from "react";
+import { AppHeader } from "../components/AppHeader";
+import { EmptyState } from "../components/EmptyState";
+import { ExportBar } from "../components/ExportBar";
+import { InputCards } from "../components/InputCards";
+import { ProcessingQueue } from "../components/ProcessingQueue";
+import { ReviewTable } from "../components/ReviewTable";
+import { SummaryPanel } from "../components/SummaryPanel";
+import {
+  createSampleLedgerEntries,
+  createSampleReceiptEntry,
+} from "../lib/ledger/sampleData";
+import { calculateExpenseSummary } from "../lib/ledger/summary";
+import { createId } from "../lib/utils/ids";
+import type { LedgerEntry, ProcessingItem } from "../types/ledger";
+
+function isLedgerEntry(value: unknown): value is LedgerEntry {
+  return (
+    typeof value === "object" &&
+    value !== null &&
+    "id" in value &&
+    "transactionDate" in value &&
+    "totalAmount" in value
+  );
+}
+
+function isLedgerEntryArray(value: unknown): value is LedgerEntry[] {
+  return Array.isArray(value) && value.every(isLedgerEntry);
+}
+
+export default function Home() {
+  const [entries, setEntries] = useState<LedgerEntry[]>([]);
+  const [processingItems, setProcessingItems] = useState<ProcessingItem[]>([]);
+  const [showDownloadWarning, setShowDownloadWarning] = useState(false);
+
+  const summary = useMemo(() => calculateExpenseSummary(entries), [entries]);
+
+  function addSampleData() {
+    setEntries((currentEntries) => [
+      ...currentEntries,
+      ...createSampleLedgerEntries(),
+    ]);
+    setShowDownloadWarning(false);
+  }
+
+  async function handleSpreadsheetFiles(files: FileList | null) {
+    if (!files || files.length === 0) {
+      return;
+    }
+
+    const spreadsheetFiles = Array.from(files);
+    const nextItems = spreadsheetFiles.map((file, index) => ({
+      id: createId("queue"),
+      fileName: file.name,
+      source: "spreadsheet",
+      status: index === 0 ? "processing" : "queued",
+    })) satisfies ProcessingItem[];
+
+    setProcessingItems((currentItems) => [...nextItems, ...currentItems]);
+
+    for (let index = 0; index < spreadsheetFiles.length; index += 1) {
+      const file = spreadsheetFiles[index];
+      const item = nextItems[index];
+
+      setProcessingItems((currentItems) =>
+        currentItems.map((currentItem) =>
+          currentItem.id === item.id
+            ? { ...currentItem, status: "processing", errorMessage: undefined }
+            : currentItem,
+        ),
+      );
+
+      try {
+        const formData = new FormData();
+        formData.append("file", file);
+
+        const response = await fetch("/api/import-transactions", {
+          method: "POST",
+          body: formData,
+        });
+        const payload = (await response.json()) as
+          | LedgerEntry[]
+          | { error?: string };
+
+        if (!response.ok || !isLedgerEntryArray(payload)) {
+          throw new Error(
+            "error" in payload && payload.error
+              ? payload.error
+              : "거래내역 파일을 읽지 못했습니다.",
+          );
+        }
+
+        setEntries((currentEntries) => [...payload, ...currentEntries]);
+        setProcessingItems((currentItems) =>
+          currentItems.map((currentItem) =>
+            currentItem.id === item.id
+              ? { ...currentItem, status: "done", errorMessage: undefined }
+              : currentItem,
+          ),
+        );
+      } catch (error) {
+        setProcessingItems((currentItems) =>
+          currentItems.map((currentItem) =>
+            currentItem.id === item.id
+              ? {
+                  ...currentItem,
+                  status: "failed",
+                  errorMessage:
+                    error instanceof Error
+                      ? error.message
+                      : "거래내역 파일을 읽지 못했습니다.",
+                }
+              : currentItem,
+          ),
+        );
+      }
+    }
+  }
+
+  async function handleReceiptFiles(files: FileList | null) {
+    if (!files || files.length === 0) {
+      return;
+    }
+
+    const receiptFiles = Array.from(files);
+    const nextItems = receiptFiles.map((file) => ({
+      id: createId("queue"),
+      fileName: file.name,
+      source: "receipt",
+      status: "queued",
+    })) satisfies ProcessingItem[];
+
+    setProcessingItems((currentItems) => [...nextItems, ...currentItems]);
+
+    for (let index = 0; index < receiptFiles.length; index += 1) {
+      const file = receiptFiles[index];
+      const item = nextItems[index];
+
+      setProcessingItems((currentItems) =>
+        currentItems.map((currentItem) =>
+          currentItem.id === item.id
+            ? { ...currentItem, status: "processing", errorMessage: undefined }
+            : currentItem,
+        ),
+      );
+
+      try {
+        const formData = new FormData();
+        formData.append("file", file);
+
+        const response = await fetch("/api/extract-receipt", {
+          method: "POST",
+          body: formData,
+        });
+        const payload = (await response.json()) as
+          | LedgerEntry
+          | { error?: string };
+
+        if (!response.ok || !isLedgerEntry(payload)) {
+          throw new Error(
+            "error" in payload && payload.error
+              ? payload.error
+              : "영수증 분석에 실패했습니다.",
+          );
+        }
+
+        setEntries((currentEntries) => [payload, ...currentEntries]);
+        setProcessingItems((currentItems) =>
+          currentItems.map((currentItem) =>
+            currentItem.id === item.id
+              ? { ...currentItem, status: "done", errorMessage: undefined }
+              : currentItem,
+          ),
+        );
+      } catch (error) {
+        setProcessingItems((currentItems) =>
+          currentItems.map((currentItem) =>
+            currentItem.id === item.id
+              ? {
+                  ...currentItem,
+                  status: "failed",
+                  errorMessage:
+                    error instanceof Error
+                      ? error.message
+                      : "영수증 분석에 실패했습니다.",
+                }
+              : currentItem,
+          ),
+        );
+      }
+    }
+  }
+
+  function useSampleResult(itemId: string) {
+    const item = processingItems.find(
+      (currentItem) => currentItem.id === itemId,
+    );
+
+    if (!item) {
+      return;
+    }
+
+    setEntries((currentEntries) => [
+      createSampleReceiptEntry(item.fileName),
+      ...currentEntries,
+    ]);
+    setProcessingItems((currentItems) =>
+      currentItems.map((currentItem) =>
+        currentItem.id === itemId
+          ? { ...currentItem, status: "done", errorMessage: undefined }
+          : currentItem,
+      ),
+    );
+  }
+
+  function updateEntry(id: string, patch: Partial<LedgerEntry>) {
+    setEntries((currentEntries) =>
+      currentEntries.map((entry) => {
+        if (entry.id !== id) {
+          return entry;
+        }
+
+        const updatedEntry = {
+          ...entry,
+          ...patch,
+          category: patch.category ?? entry.category ?? "기타경비",
+        };
+
+        if ("supplyAmount" in patch || "vatAmount" in patch) {
+          updatedEntry.vatStatus =
+            updatedEntry.supplyAmount === undefined &&
+            updatedEntry.vatAmount === undefined
+              ? "missing"
+              : "confirmed";
+        }
+
+        return updatedEntry;
+      }),
+    );
+  }
+
+  async function downloadLedger() {
+    const response = await fetch("/api/export-ledger", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ entries }),
+    });
+
+    if (!response.ok) {
+      return;
+    }
+
+    const blob = await response.blob();
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = "jeongsan-simple-ledger.xlsx";
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    URL.revokeObjectURL(url);
+  }
+
+  function requestExport() {
+    if (summary.needsReviewCount > 0) {
+      setShowDownloadWarning(true);
+      return;
+    }
+
+    setShowDownloadWarning(false);
+    void downloadLedger();
+  }
+
+  function confirmExport() {
+    setShowDownloadWarning(false);
+    void downloadLedger();
+  }
+
+  return (
+    <main className="min-h-screen bg-stone-50 text-ink">
+      <section className="mx-auto flex w-full max-w-6xl flex-col gap-6 px-5 py-6 sm:px-8 lg:py-10">
+        <AppHeader onLoadSample={addSampleData} />
+
+        <InputCards
+          onReceiptFiles={handleReceiptFiles}
+          onSpreadsheetFiles={handleSpreadsheetFiles}
+        />
+
+        <ProcessingQueue
+          items={processingItems}
+          onUseSampleResult={useSampleResult}
+        />
+
+        <section className="grid gap-4 lg:grid-cols-[1fr_320px]">
+          <div>
+            {entries.length > 0 ? (
+              <ReviewTable entries={entries} onUpdateEntry={updateEntry} />
+            ) : (
+              <section className="rounded-lg border border-stone-200 bg-white p-5 shadow-soft">
+                <div className="mb-4 flex items-center justify-between gap-4">
+                  <h2 className="text-lg font-semibold text-stone-950">
+                    검토 테이블
+                  </h2>
+                  <span className="rounded-full bg-stone-100 px-3 py-1 text-xs font-medium text-stone-600">
+                    0개 항목
+                  </span>
+                </div>
+                <EmptyState onLoadSample={addSampleData} />
+              </section>
+            )}
+          </div>
+
+          <SummaryPanel summary={summary} />
+        </section>
+
+        <ExportBar
+          entryCount={entries.length}
+          showWarning={showDownloadWarning}
+          onExport={requestExport}
+          onCancelWarning={() => setShowDownloadWarning(false)}
+          onConfirmExport={confirmExport}
+        />
+      </section>
+    </main>
+  );
+}

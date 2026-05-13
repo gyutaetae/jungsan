@@ -1,0 +1,14 @@
+__pycache__/
+*.py[cod]
+.DS_Store
+node_modules/
+.next/
+.npm-cache/
+.codex/
+tasks/
+scripts/
+prompts/
+persuasion-data/
+
+persuasion-data/runs/*
+!persuasion-data/runs/.gitkeep
