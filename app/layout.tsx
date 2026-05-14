@@ -4,6 +4,11 @@ import "./globals.css";
 export const metadata: Metadata = {
   title: "정산",
   description: "영수증과 거래내역을 검토 가능한 간편장부 초안으로 바꾸는 웹 MVP",
+  icons: {
+    icon: "/favicon.png",
+    shortcut: "/favicon.png",
+    apple: "/apple-touch-icon.png",
+  },
 };
 
 export default function RootLayout({
