@@ -16,6 +16,7 @@ import { calculateExpenseSummary } from "../lib/ledger/summary";
 import { calculateTaxPrepSummary } from "../lib/taxPrep/summary";
 import { createId } from "../lib/utils/ids";
 import type { LedgerEntry, ProcessingItem } from "../types/ledger";
+import type { Language, ThemeMode } from "../types/ui";
 
 function isLedgerEntry(value: unknown): value is LedgerEntry {
   return (
@@ -36,6 +37,8 @@ export default function Home() {
   const [processingItems, setProcessingItems] = useState<ProcessingItem[]>([]);
   const [showDownloadWarning, setShowDownloadWarning] = useState(false);
   const [totalIncomeAmount, setTotalIncomeAmount] = useState(0);
+  const [language, setLanguage] = useState<Language>("ko");
+  const [themeMode, setThemeMode] = useState<ThemeMode>("light");
 
   const summary = useMemo(() => calculateExpenseSummary(entries), [entries]);
   const taxPrepSummary = useMemo(
@@ -315,57 +318,82 @@ export default function Home() {
   }
 
   return (
-    <main className="min-h-screen bg-stone-50 text-ink">
-      <section className="mx-auto flex w-full max-w-6xl flex-col gap-6 px-5 py-6 sm:px-8 lg:py-10">
-        <AppHeader onLoadSample={addSampleData} />
+    <div className={themeMode === "dark" ? "dark" : undefined}>
+      <main className="min-h-screen bg-stone-50 text-ink dark:bg-stone-950">
+        <section className="mx-auto flex w-full max-w-6xl flex-col gap-6 px-5 py-6 sm:px-8 lg:py-10">
+          <AppHeader
+            onLoadSample={addSampleData}
+            language={language}
+            themeMode={themeMode}
+            onToggleLanguage={() =>
+              setLanguage((current) => (current === "ko" ? "en" : "ko"))
+            }
+            onToggleTheme={() =>
+              setThemeMode((current) =>
+                current === "light" ? "dark" : "light",
+              )
+            }
+          />
 
-        <InputCards
-          onReceiptFiles={handleReceiptFiles}
-          onSpreadsheetFiles={handleSpreadsheetFiles}
-        />
+          <InputCards
+            onReceiptFiles={handleReceiptFiles}
+            onSpreadsheetFiles={handleSpreadsheetFiles}
+            language={language}
+          />
 
-        <ProcessingQueue
-          items={processingItems}
-          onUseSampleResult={useSampleResult}
-        />
+          <ProcessingQueue
+            items={processingItems}
+            onUseSampleResult={useSampleResult}
+            language={language}
+          />
 
-        <section className="grid gap-4 lg:grid-cols-[1fr_320px]">
-          <div>
-            {entries.length > 0 ? (
-              <ReviewTable entries={entries} onUpdateEntry={updateEntry} />
-            ) : (
-              <section className="rounded-lg border border-stone-200 bg-white p-5 shadow-soft">
-                <div className="mb-4 flex items-center justify-between gap-4">
-                  <h2 className="text-lg font-semibold text-stone-950">
-                    검토 테이블
-                  </h2>
-                  <span className="rounded-full bg-stone-100 px-3 py-1 text-xs font-medium text-stone-600">
-                    0개 항목
-                  </span>
-                </div>
-                <EmptyState onLoadSample={addSampleData} />
-              </section>
-            )}
-          </div>
+          <section className="grid gap-4 lg:grid-cols-[1fr_320px]">
+            <div>
+              {entries.length > 0 ? (
+                <ReviewTable
+                  entries={entries}
+                  onUpdateEntry={updateEntry}
+                  language={language}
+                />
+              ) : (
+                <section className="rounded-lg border border-stone-200 bg-white p-5 shadow-soft dark:border-stone-800 dark:bg-stone-950">
+                  <div className="mb-4 flex items-center justify-between gap-4">
+                    <h2 className="text-lg font-semibold text-stone-950 dark:text-stone-50">
+                      {language === "ko" ? "검토 테이블" : "Review table"}
+                    </h2>
+                    <span className="rounded-full bg-stone-100 px-3 py-1 text-xs font-medium text-stone-600 dark:bg-stone-900 dark:text-stone-300">
+                      {language === "ko" ? "0개 항목" : "0 items"}
+                    </span>
+                  </div>
+                  <EmptyState
+                    onLoadSample={addSampleData}
+                    language={language}
+                  />
+                </section>
+              )}
+            </div>
 
-          <SummaryPanel
-            summary={summary}
-            taxPrepSummary={taxPrepSummary}
-            totalIncomeAmount={totalIncomeAmount}
-            onTotalIncomeAmountChange={setTotalIncomeAmount}
-            onDownloadTaxPrep={downloadTaxPrep}
+            <SummaryPanel
+              summary={summary}
+              taxPrepSummary={taxPrepSummary}
+              totalIncomeAmount={totalIncomeAmount}
+              onTotalIncomeAmountChange={setTotalIncomeAmount}
+              onDownloadTaxPrep={downloadTaxPrep}
+              entryCount={entries.length}
+              language={language}
+            />
+          </section>
+
+          <ExportBar
             entryCount={entries.length}
+            showWarning={showDownloadWarning}
+            onExport={requestExport}
+            onCancelWarning={() => setShowDownloadWarning(false)}
+            onConfirmExport={confirmExport}
+            language={language}
           />
         </section>
-
-        <ExportBar
-          entryCount={entries.length}
-          showWarning={showDownloadWarning}
-          onExport={requestExport}
-          onCancelWarning={() => setShowDownloadWarning(false)}
-          onConfirmExport={confirmExport}
-        />
-      </section>
-    </main>
+      </main>
+    </div>
   );
 }

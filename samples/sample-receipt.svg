@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="1200" viewBox="0 0 900 1200">
+  <rect width="900" height="1200" fill="#f3f4f1"/>
+  <rect x="150" y="70" width="600" height="1060" rx="22" fill="#ffffff" stroke="#202020" stroke-width="3"/>
+  <text x="450" y="155" text-anchor="middle" font-family="Arial, sans-serif" font-size="46" font-weight="700" fill="#111111">카페 정산</text>
+  <text x="450" y="205" text-anchor="middle" font-family="Arial, sans-serif" font-size="24" fill="#333333">사업자등록번호 123-45-67890</text>
+  <text x="450" y="245" text-anchor="middle" font-family="Arial, sans-serif" font-size="24" fill="#333333">서울시 마포구 아이디어로 12</text>
+  <line x1="205" y1="300" x2="695" y2="300" stroke="#111111" stroke-width="3" stroke-dasharray="14 12"/>
+  <text x="205" y="365" font-family="Arial, sans-serif" font-size="30" fill="#111111">거래일시</text>
+  <text x="695" y="365" text-anchor="end" font-family="Arial, sans-serif" font-size="30" fill="#111111">2026-05-14 14:32</text>
+  <text x="205" y="420" font-family="Arial, sans-serif" font-size="30" fill="#111111">결제수단</text>
+  <text x="695" y="420" text-anchor="end" font-family="Arial, sans-serif" font-size="30" fill="#111111">신용카드</text>
+  <line x1="205" y1="470" x2="695" y2="470" stroke="#111111" stroke-width="3"/>
+  <text x="205" y="535" font-family="Arial, sans-serif" font-size="32" font-weight="700" fill="#111111">품목</text>
+  <text x="695" y="535" text-anchor="end" font-family="Arial, sans-serif" font-size="32" font-weight="700" fill="#111111">금액</text>
+  <text x="205" y="595" font-family="Arial, sans-serif" font-size="30" fill="#111111">아메리카노 2잔</text>
+  <text x="695" y="595" text-anchor="end" font-family="Arial, sans-serif" font-size="30" fill="#111111">9,000</text>
+  <text x="205" y="650" font-family="Arial, sans-serif" font-size="30" fill="#111111">회의실 이용</text>
+  <text x="695" y="650" text-anchor="end" font-family="Arial, sans-serif" font-size="30" fill="#111111">13,000</text>
+  <line x1="205" y1="705" x2="695" y2="705" stroke="#111111" stroke-width="3"/>
+  <text x="205" y="770" font-family="Arial, sans-serif" font-size="32" fill="#111111">공급가액</text>
+  <text x="695" y="770" text-anchor="end" font-family="Arial, sans-serif" font-size="32" fill="#111111">20,000</text>
+  <text x="205" y="825" font-family="Arial, sans-serif" font-size="32" fill="#111111">부가세</text>
+  <text x="695" y="825" text-anchor="end" font-family="Arial, sans-serif" font-size="32" fill="#111111">2,000</text>
+  <text x="205" y="900" font-family="Arial, sans-serif" font-size="38" font-weight="700" fill="#111111">합계</text>
+  <text x="695" y="900" text-anchor="end" font-family="Arial, sans-serif" font-size="38" font-weight="700" fill="#111111">22,000</text>
+  <line x1="205" y1="960" x2="695" y2="960" stroke="#111111" stroke-width="3" stroke-dasharray="14 12"/>
+  <text x="450" y="1030" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" fill="#111111">카드영수증</text>
+  <text x="450" y="1080" text-anchor="middle" font-family="Arial, sans-serif" font-size="24" fill="#444444">정산 MVP OCR 테스트용 샘플</text>
+</svg>
