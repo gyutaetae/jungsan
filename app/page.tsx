@@ -347,32 +347,26 @@ export default function Home() {
             language={language}
           />
 
-          <section className="grid gap-4 lg:grid-cols-[1fr_320px]">
-            <div>
-              {entries.length > 0 ? (
-                <ReviewTable
-                  entries={entries}
-                  onUpdateEntry={updateEntry}
-                  language={language}
-                />
-              ) : (
-                <section className="rounded-lg border border-stone-200 bg-white p-5 shadow-soft dark:border-stone-800 dark:bg-stone-950">
-                  <div className="mb-4 flex items-center justify-between gap-4">
-                    <h2 className="text-lg font-semibold text-stone-950 dark:text-stone-50">
-                      {language === "ko" ? "검토 테이블" : "Review table"}
-                    </h2>
-                    <span className="rounded-full bg-stone-100 px-3 py-1 text-xs font-medium text-stone-600 dark:bg-stone-900 dark:text-stone-300">
-                      {language === "ko" ? "0개 항목" : "0 items"}
-                    </span>
-                  </div>
-                  <EmptyState
-                    onLoadSample={addSampleData}
-                    language={language}
-                  />
-                </section>
-              )}
-            </div>
-
+          <section className="flex flex-col gap-4">
+            {entries.length > 0 ? (
+              <ReviewTable
+                entries={entries}
+                onUpdateEntry={updateEntry}
+                language={language}
+              />
+            ) : (
+              <section className="rounded-lg border border-stone-200 bg-white p-5 shadow-soft dark:border-stone-800 dark:bg-stone-950">
+                <div className="mb-4 flex items-center justify-between gap-4">
+                  <h2 className="text-lg font-semibold text-stone-950 dark:text-stone-50">
+                    {language === "ko" ? "검토 테이블" : "Review table"}
+                  </h2>
+                  <span className="rounded-full bg-stone-100 px-3 py-1 text-xs font-medium text-stone-600 dark:bg-stone-900 dark:text-stone-300">
+                    {language === "ko" ? "0개 항목" : "0 items"}
+                  </span>
+                </div>
+                <EmptyState onLoadSample={addSampleData} language={language} />
+              </section>
+            )}
             <SummaryPanel
               summary={summary}
               taxPrepSummary={taxPrepSummary}

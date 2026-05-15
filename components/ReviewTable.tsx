@@ -81,7 +81,9 @@ const proofLabels: Record<Language, Record<ProofType, string>> = {
 };
 
 function moneyInputValue(value?: number) {
-  return typeof value === "number" ? String(value) : "";
+  return typeof value === "number"
+    ? new Intl.NumberFormat("ko-KR").format(value)
+    : "";
 }
 
 export function ReviewTable({
@@ -109,155 +111,186 @@ export function ReviewTable({
         </span>
       </div>
 
-      <div className="mt-5 overflow-x-auto">
-        <table className="min-w-[1260px] border-separate border-spacing-0 text-left text-sm">
-          <thead>
-            <tr className="text-xs font-semibold text-stone-500 dark:text-stone-400">
-              {t.headers.map((header) => (
-                <th
-                  key={header}
-                  className="border-b border-stone-200 pb-2 pr-2 dark:border-stone-800"
+      <div className="mt-5 grid gap-3">
+        {entries.map((entry) => (
+          <article
+            key={entry.id}
+            className="rounded-lg border border-stone-200 bg-stone-50 p-4 dark:border-stone-800 dark:bg-stone-900"
+          >
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+              <div className="min-w-0">
+                <p className="truncate text-base font-semibold text-stone-950 dark:text-stone-50">
+                  {entry.vendorName || "-"}
+                </p>
+                <p className="mt-1 text-sm text-stone-500 dark:text-stone-400">
+                  {entry.transactionDate} · {moneyInputValue(entry.totalAmount)}
+                </p>
+              </div>
+              <div className="shrink-0">
+                {entry.status === "confirmed" ? (
+                  <span className="inline-flex h-9 min-w-24 items-center justify-center gap-1.5 whitespace-nowrap rounded-md border border-accent-300 bg-accent-100 px-3 text-sm font-semibold text-accent-800 dark:border-accent-500 dark:bg-accent-400 dark:text-stone-950">
+                    <Check size={16} aria-hidden="true" />
+                    {t.done}
+                  </span>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() =>
+                      onUpdateEntry(entry.id, {
+                        status: "confirmed",
+                      })
+                    }
+                    className="inline-flex h-9 min-w-24 items-center justify-center gap-1.5 whitespace-nowrap rounded-md bg-red-500 px-3 text-sm font-semibold text-white shadow-soft transition hover:bg-red-400 focus:outline-none focus:ring-2 focus:ring-red-200"
+                  >
+                    <Check size={16} aria-hidden="true" />
+                    {t.confirm}
+                  </button>
+                )}
+              </div>
+            </div>
+
+            <div className="mt-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+              <label className="grid gap-1">
+                <span className="text-xs font-semibold text-stone-500 dark:text-stone-400">
+                  {t.headers[0]}
+                </span>
+                <input
+                  type="date"
+                  value={entry.transactionDate}
+                  onChange={(event) =>
+                    onUpdateEntry(entry.id, {
+                      transactionDate: event.currentTarget.value,
+                    })
+                  }
+                  className={inputClass}
+                />
+              </label>
+
+              <label className="grid gap-1">
+                <span className="text-xs font-semibold text-stone-500 dark:text-stone-400">
+                  {t.headers[1]}
+                </span>
+                <input
+                  value={entry.vendorName}
+                  onChange={(event) =>
+                    onUpdateEntry(entry.id, {
+                      vendorName: event.currentTarget.value,
+                    })
+                  }
+                  className={inputClass}
+                />
+              </label>
+
+              <label className="grid gap-1 sm:col-span-2 xl:col-span-1">
+                <span className="text-xs font-semibold text-stone-500 dark:text-stone-400">
+                  {t.headers[2]}
+                </span>
+                <input
+                  value={entry.memo ?? ""}
+                  onChange={(event) =>
+                    onUpdateEntry(entry.id, {
+                      memo: event.currentTarget.value,
+                    })
+                  }
+                  className={inputClass}
+                />
+              </label>
+
+              <label className="grid gap-1">
+                <span className="text-xs font-semibold text-stone-500 dark:text-stone-400">
+                  {t.headers[3]}
+                </span>
+                <input
+                  inputMode="numeric"
+                  value={moneyInputValue(entry.totalAmount)}
+                  onChange={(event) =>
+                    onUpdateEntry(entry.id, {
+                      totalAmount:
+                        parseMoneyInput(event.currentTarget.value) ?? 0,
+                    })
+                  }
+                  className={inputClass}
+                />
+              </label>
+
+              <label className="grid gap-1">
+                <span className="text-xs font-semibold text-stone-500 dark:text-stone-400">
+                  {t.headers[4]}
+                </span>
+                <input
+                  inputMode="numeric"
+                  value={moneyInputValue(entry.supplyAmount)}
+                  onChange={(event) =>
+                    onUpdateEntry(entry.id, {
+                      supplyAmount: parseMoneyInput(event.currentTarget.value),
+                    })
+                  }
+                  className={inputClass}
+                />
+              </label>
+
+              <label className="grid gap-1">
+                <span className="text-xs font-semibold text-stone-500 dark:text-stone-400">
+                  {t.headers[5]}
+                </span>
+                <input
+                  inputMode="numeric"
+                  value={moneyInputValue(entry.vatAmount)}
+                  onChange={(event) =>
+                    onUpdateEntry(entry.id, {
+                      vatAmount: parseMoneyInput(event.currentTarget.value),
+                    })
+                  }
+                  className={inputClass}
+                />
+              </label>
+
+              <label className="grid gap-1">
+                <span className="text-xs font-semibold text-stone-500 dark:text-stone-400">
+                  {t.headers[6]}
+                </span>
+                <select
+                  value={entry.category}
+                  onChange={(event) =>
+                    onUpdateEntry(entry.id, {
+                      category:
+                        event.currentTarget.value as LedgerEntry["category"],
+                    })
+                  }
+                  className={inputClass}
                 >
-                  {header}
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {entries.map((entry) => (
-              <tr key={entry.id}>
-                <td className="border-b border-stone-100 py-3 pr-2 dark:border-stone-900">
-                  <input
-                    type="date"
-                    value={entry.transactionDate}
-                    onChange={(event) =>
-                      onUpdateEntry(entry.id, {
-                        transactionDate: event.currentTarget.value,
-                      })
-                    }
-                    className={inputClass}
-                  />
-                </td>
-                <td className="border-b border-stone-100 py-3 pr-2 dark:border-stone-900">
-                  <input
-                    value={entry.vendorName}
-                    onChange={(event) =>
-                      onUpdateEntry(entry.id, {
-                        vendorName: event.currentTarget.value,
-                      })
-                    }
-                    className={inputClass}
-                  />
-                </td>
-                <td className="border-b border-stone-100 py-3 pr-2 dark:border-stone-900">
-                  <input
-                    value={entry.memo ?? ""}
-                    onChange={(event) =>
-                      onUpdateEntry(entry.id, {
-                        memo: event.currentTarget.value,
-                      })
-                    }
-                    className={inputClass}
-                  />
-                </td>
-                <td className="border-b border-stone-100 py-3 pr-2 dark:border-stone-900">
-                  <input
-                    inputMode="numeric"
-                    value={moneyInputValue(entry.totalAmount)}
-                    onChange={(event) =>
-                      onUpdateEntry(entry.id, {
-                        totalAmount:
-                          parseMoneyInput(event.currentTarget.value) ?? 0,
-                      })
-                    }
-                    className={inputClass}
-                  />
-                </td>
-                <td className="border-b border-stone-100 py-3 pr-2 dark:border-stone-900">
-                  <input
-                    inputMode="numeric"
-                    value={moneyInputValue(entry.supplyAmount)}
-                    onChange={(event) =>
-                      onUpdateEntry(entry.id, {
-                        supplyAmount: parseMoneyInput(
-                          event.currentTarget.value,
-                        ),
-                      })
-                    }
-                    className={inputClass}
-                  />
-                </td>
-                <td className="border-b border-stone-100 py-3 pr-2 dark:border-stone-900">
-                  <input
-                    inputMode="numeric"
-                    value={moneyInputValue(entry.vatAmount)}
-                    onChange={(event) =>
-                      onUpdateEntry(entry.id, {
-                        vatAmount: parseMoneyInput(event.currentTarget.value),
-                      })
-                    }
-                    className={inputClass}
-                  />
-                </td>
-                <td className="border-b border-stone-100 py-3 pr-2 dark:border-stone-900">
-                  <select
-                    value={entry.category}
-                    onChange={(event) =>
-                      onUpdateEntry(entry.id, {
-                        category: event.currentTarget.value as LedgerEntry["category"],
-                      })
-                    }
-                    className={inputClass}
-                  >
-                    {EXPENSE_CATEGORIES.map((category) => (
-                      <option key={category} value={category}>
-                        {categoryLabels[language][category]}
-                      </option>
-                    ))}
-                  </select>
-                </td>
-                <td className="border-b border-stone-100 py-3 pr-2 dark:border-stone-900">
-                  <select
-                    value={entry.proofType}
-                    onChange={(event) =>
-                      onUpdateEntry(entry.id, {
-                        proofType: event.currentTarget.value as LedgerEntry["proofType"],
-                      })
-                    }
-                    className={inputClass}
-                  >
-                    {PROOF_TYPES.map((proofType) => (
-                      <option key={proofType} value={proofType}>
-                        {proofLabels[language][proofType]}
-                      </option>
-                    ))}
-                  </select>
-                </td>
-                <td className="w-28 border-b border-stone-100 py-3 dark:border-stone-900">
-                  {entry.status === "confirmed" ? (
-                    <span className="inline-flex h-9 min-w-24 items-center justify-center gap-1.5 whitespace-nowrap rounded-md border border-accent-300 bg-accent-100 px-3 text-sm font-semibold text-accent-800 dark:border-accent-500 dark:bg-accent-400 dark:text-stone-950">
-                      <Check size={16} aria-hidden="true" />
-                      {t.done}
-                    </span>
-                  ) : (
-                    <button
-                      type="button"
-                      onClick={() =>
-                        onUpdateEntry(entry.id, {
-                          status: "confirmed",
-                        })
-                      }
-                      className="inline-flex h-9 min-w-24 items-center justify-center gap-1.5 whitespace-nowrap rounded-md bg-red-500 px-3 text-sm font-semibold text-white shadow-soft transition hover:bg-red-400 focus:outline-none focus:ring-2 focus:ring-red-200"
-                    >
-                      <Check size={16} aria-hidden="true" />
-                      {t.confirm}
-                    </button>
-                  )}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+                  {EXPENSE_CATEGORIES.map((category) => (
+                    <option key={category} value={category}>
+                      {categoryLabels[language][category]}
+                    </option>
+                  ))}
+                </select>
+              </label>
+
+              <label className="grid gap-1">
+                <span className="text-xs font-semibold text-stone-500 dark:text-stone-400">
+                  {t.headers[7]}
+                </span>
+                <select
+                  value={entry.proofType}
+                  onChange={(event) =>
+                    onUpdateEntry(entry.id, {
+                      proofType:
+                        event.currentTarget.value as LedgerEntry["proofType"],
+                    })
+                  }
+                  className={inputClass}
+                >
+                  {PROOF_TYPES.map((proofType) => (
+                    <option key={proofType} value={proofType}>
+                      {proofLabels[language][proofType]}
+                    </option>
+                  ))}
+                </select>
+              </label>
+            </div>
+          </article>
+        ))}
       </div>
     </section>
   );
