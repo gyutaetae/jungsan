@@ -347,8 +347,12 @@ export default function Home() {
             language={language}
           />
 
-          <section className="grid gap-4 lg:grid-cols-[1fr_320px]">
-            <div>
+          <section
+            className={`grid gap-4 transition-all duration-500 ease-in-out ${
+              entries.length > 0 ? "lg:grid-cols-[1fr_320px]" : "grid-cols-1"
+            }`}
+          >
+            <div className="min-w-0">
               {entries.length > 0 ? (
                 <ReviewTable
                   entries={entries}
@@ -373,15 +377,19 @@ export default function Home() {
               )}
             </div>
 
-            <SummaryPanel
-              summary={summary}
-              taxPrepSummary={taxPrepSummary}
-              totalIncomeAmount={totalIncomeAmount}
-              onTotalIncomeAmountChange={setTotalIncomeAmount}
-              onDownloadTaxPrep={downloadTaxPrep}
-              entryCount={entries.length}
-              language={language}
-            />
+            {entries.length > 0 ? (
+              <div className="min-w-0 self-end origin-right animate-in fade-in zoom-in-95 duration-500 lg:sticky lg:bottom-6">
+                <SummaryPanel
+                  summary={summary}
+                  taxPrepSummary={taxPrepSummary}
+                  totalIncomeAmount={totalIncomeAmount}
+                  onTotalIncomeAmountChange={setTotalIncomeAmount}
+                  onDownloadTaxPrep={downloadTaxPrep}
+                  entryCount={entries.length}
+                  language={language}
+                />
+              </div>
+            ) : null}
           </section>
 
           <ExportBar
