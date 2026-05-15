@@ -367,15 +367,17 @@ export default function Home() {
                 <EmptyState onLoadSample={addSampleData} language={language} />
               </section>
             )}
-            <SummaryPanel
-              summary={summary}
-              taxPrepSummary={taxPrepSummary}
-              totalIncomeAmount={totalIncomeAmount}
-              onTotalIncomeAmountChange={setTotalIncomeAmount}
-              onDownloadTaxPrep={downloadTaxPrep}
-              entryCount={entries.length}
-              language={language}
-            />
+            {entries.length > 0 ? (
+              <SummaryPanel
+                summary={summary}
+                taxPrepSummary={taxPrepSummary}
+                totalIncomeAmount={totalIncomeAmount}
+                onTotalIncomeAmountChange={setTotalIncomeAmount}
+                onDownloadTaxPrep={downloadTaxPrep}
+                entryCount={entries.length}
+                language={language}
+              />
+            ) : null}
           </section>
 
           <ExportBar

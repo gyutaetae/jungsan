@@ -18,14 +18,32 @@ const copy = {
   ko: {
     title: "검토 테이블",
     count: (count: number) => `${count}개 항목`,
-    headers: ["거래일", "거래처", "메모", "금액", "공급가액", "부가세", "계정과목", "증빙유형", "상태"],
+    labels: {
+      date: "거래일",
+      vendor: "거래처",
+      memo: "메모",
+      total: "금액",
+      supply: "공급가액",
+      vat: "부가세",
+      category: "계정과목",
+      proof: "증빙유형",
+    },
     confirm: "확인",
     done: "완료",
   },
   en: {
     title: "Review table",
     count: (count: number) => `${count} items`,
-    headers: ["Date", "Vendor", "Memo", "Amount", "Supply", "VAT", "Category", "Proof", "Status"],
+    labels: {
+      date: "Date",
+      vendor: "Vendor",
+      memo: "Memo",
+      total: "Amount",
+      supply: "Supply",
+      vat: "VAT",
+      category: "Category",
+      proof: "Proof",
+    },
     confirm: "Confirm",
     done: "Done",
   },
@@ -34,7 +52,17 @@ const copy = {
   {
     title: string;
     count: (count: number) => string;
-    headers: string[];
+    labels: Record<
+      | "date"
+      | "vendor"
+      | "memo"
+      | "total"
+      | "supply"
+      | "vat"
+      | "category"
+      | "proof",
+      string
+    >;
     confirm: string;
     done: string;
   }
@@ -94,7 +122,7 @@ export function ReviewTable({
   const t = copy[language];
 
   return (
-    <section className="rounded-lg border border-stone-200 bg-white p-5 shadow-soft dark:border-stone-800 dark:bg-stone-950">
+    <section className="min-w-0 overflow-hidden rounded-lg border border-stone-200 bg-white p-3 shadow-soft dark:border-stone-800 dark:bg-stone-950 sm:p-5">
       <div className="flex items-center justify-between gap-4">
         <div className="flex items-center gap-3">
           <TableProperties
@@ -115,7 +143,7 @@ export function ReviewTable({
         {entries.map((entry) => (
           <article
             key={entry.id}
-            className="rounded-lg border border-stone-200 bg-stone-50 p-4 dark:border-stone-800 dark:bg-stone-900"
+            className="rounded-lg border border-stone-200 bg-stone-50 p-3 dark:border-stone-800 dark:bg-stone-900 sm:p-4"
           >
             <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
               <div className="min-w-0">
@@ -152,7 +180,7 @@ export function ReviewTable({
             <div className="mt-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
               <label className="grid gap-1">
                 <span className="text-xs font-semibold text-stone-500 dark:text-stone-400">
-                  {t.headers[0]}
+                  {t.labels.date}
                 </span>
                 <input
                   type="date"
@@ -168,7 +196,7 @@ export function ReviewTable({
 
               <label className="grid gap-1">
                 <span className="text-xs font-semibold text-stone-500 dark:text-stone-400">
-                  {t.headers[1]}
+                  {t.labels.vendor}
                 </span>
                 <input
                   value={entry.vendorName}
@@ -183,7 +211,7 @@ export function ReviewTable({
 
               <label className="grid gap-1 sm:col-span-2 xl:col-span-1">
                 <span className="text-xs font-semibold text-stone-500 dark:text-stone-400">
-                  {t.headers[2]}
+                  {t.labels.memo}
                 </span>
                 <input
                   value={entry.memo ?? ""}
@@ -198,7 +226,7 @@ export function ReviewTable({
 
               <label className="grid gap-1">
                 <span className="text-xs font-semibold text-stone-500 dark:text-stone-400">
-                  {t.headers[3]}
+                  {t.labels.total}
                 </span>
                 <input
                   inputMode="numeric"
@@ -215,7 +243,7 @@ export function ReviewTable({
 
               <label className="grid gap-1">
                 <span className="text-xs font-semibold text-stone-500 dark:text-stone-400">
-                  {t.headers[4]}
+                  {t.labels.supply}
                 </span>
                 <input
                   inputMode="numeric"
@@ -231,7 +259,7 @@ export function ReviewTable({
 
               <label className="grid gap-1">
                 <span className="text-xs font-semibold text-stone-500 dark:text-stone-400">
-                  {t.headers[5]}
+                  {t.labels.vat}
                 </span>
                 <input
                   inputMode="numeric"
@@ -247,7 +275,7 @@ export function ReviewTable({
 
               <label className="grid gap-1">
                 <span className="text-xs font-semibold text-stone-500 dark:text-stone-400">
-                  {t.headers[6]}
+                  {t.labels.category}
                 </span>
                 <select
                   value={entry.category}
@@ -269,7 +297,7 @@ export function ReviewTable({
 
               <label className="grid gap-1">
                 <span className="text-xs font-semibold text-stone-500 dark:text-stone-400">
-                  {t.headers[7]}
+                  {t.labels.proof}
                 </span>
                 <select
                   value={entry.proofType}

@@ -14,8 +14,7 @@ const copy = {
   ko: {
     title: "영수증 정리부터 장부 다운로드까지",
     description:
-      "사진이나 엑셀을 올리면 장부 초안을 만들어요. " +
-      "직접 검토하고 고친 뒤 간편장부와 신고 준비 요약을 내려받으세요.",
+      "사진이나 엑셀을 올리면 장부 초안을 만들어요.\n직접 검토하고 고친 뒤 간편장부와 신고 준비 요약을 내려받으세요.",
     sample: "샘플 데이터로 보기",
     theme: "다크모드",
     language: "English",
@@ -24,7 +23,7 @@ const copy = {
   en: {
     title: "From receipts to ledger drafts",
     description:
-      "Upload receipt images or spreadsheets, review the draft rows, then download a simple ledger and tax prep summary.",
+      "Upload receipt images or spreadsheets,\nreview the draft rows, then download a simple ledger and tax prep summary.",
     sample: "Load sample data",
     theme: "Dark",
     language: "한국어",
@@ -42,7 +41,7 @@ export function AppHeader({
   const t = copy[language];
 
   return (
-    <header className="flex flex-col gap-5 border-b border-stone-200 pb-6 dark:border-stone-800 md:flex-row md:items-end md:justify-between">
+    <header className="flex flex-col gap-5 border-b border-stone-200 pb-4 dark:border-stone-800 md:flex-row md:items-end md:justify-between">
       <div className="max-w-3xl">
         <div className="mb-4 inline-flex h-12 w-12 items-center justify-center overflow-hidden rounded-2xl border border-stone-200 bg-accent-100 shadow-soft">
           <Image
@@ -57,7 +56,7 @@ export function AppHeader({
         <h1 className="text-4xl font-semibold tracking-normal text-stone-950 dark:text-stone-50 sm:text-5xl">
           {t.title}
         </h1>
-        <p className="mt-4 max-w-2xl text-base leading-7 text-stone-600 dark:text-stone-300 sm:text-lg">
+        <p className="mt-6 max-w-2xl text-base leading-7 text-stone-500 dark:text-stone-400 sm:text-lg whitespace-pre-line">
           {t.description}
         </p>
       </div>

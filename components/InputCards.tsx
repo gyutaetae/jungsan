@@ -38,26 +38,26 @@ export function InputCards({
   const t = copy[language];
 
   return (
-    <section className="grid gap-4 md:grid-cols-2">
-      <label className="block rounded-lg border border-stone-200 bg-white p-5 shadow-soft transition hover:border-accent-300 dark:border-stone-800 dark:bg-stone-950">
-        <div className="flex items-center gap-3">
-          <span className="flex h-11 w-11 items-center justify-center rounded-md bg-accent-100 text-accent-700">
-            <ImageUp size={22} aria-hidden="true" />
+    <section className="grid grid-cols-2 gap-3 sm:gap-4">
+      <label className="group block min-w-0 cursor-pointer rounded-lg border border-stone-200 bg-white p-3 shadow-soft transition-all hover:border-accent-400 hover:bg-accent-50/50 dark:border-stone-800 dark:bg-stone-950 dark:hover:border-accent-700 dark:hover:bg-accent-900/20 sm:p-5">
+        <div className="flex min-w-0 items-start gap-2 sm:items-center sm:gap-3">
+          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-accent-100 text-accent-700 transition-colors group-hover:bg-accent-200 group-hover:text-accent-800 dark:group-hover:bg-accent-800 dark:group-hover:text-accent-200 sm:h-11 sm:w-11">
+            <ImageUp size={20} aria-hidden="true" />
           </span>
-          <div>
-            <h2 className="text-lg font-semibold text-stone-950 dark:text-stone-50">
+          <div className="min-w-0">
+            <h2 className="text-sm font-semibold leading-snug text-stone-950 dark:text-stone-50 sm:text-lg">
               {t.receiptTitle}
             </h2>
-            <p className="text-sm text-stone-500 dark:text-stone-400">
+            <p className="mt-1 text-xs leading-snug text-stone-500 dark:text-stone-400 sm:text-sm">
               {t.receiptDescription}
             </p>
           </div>
         </div>
-        <div className="mt-5 rounded-md border border-dashed border-stone-300 bg-stone-50 px-4 py-6 text-sm text-stone-500 dark:border-stone-700 dark:bg-stone-900 dark:text-stone-400">
-          <span className="font-medium text-stone-700 dark:text-stone-200">
+        <div className="mt-3 rounded-md border border-dashed border-stone-300 bg-stone-50 px-3 py-4 text-xs leading-snug text-stone-500 dark:border-stone-700 dark:bg-stone-900 dark:text-stone-400 sm:mt-5 sm:px-4 sm:py-6 sm:text-sm">
+          <span className="block font-medium text-stone-700 dark:text-stone-200 sm:inline">
             {t.imageSelect}
           </span>
-          <span className="ml-2">{t.imageHint}</span>
+          <span className="mt-1 block sm:ml-2 sm:mt-0 sm:inline">{t.imageHint}</span>
         </div>
         <input
           type="file"
@@ -69,29 +69,29 @@ export function InputCards({
         />
       </label>
 
-      <label className="block rounded-lg border border-stone-200 bg-white p-5 shadow-soft transition hover:border-accent-300 dark:border-stone-800 dark:bg-stone-950">
-        <div className="flex items-center gap-3">
-          <span className="flex h-11 w-11 items-center justify-center rounded-md bg-stone-100 text-stone-700 dark:bg-stone-900 dark:text-stone-200">
-            <FileSpreadsheet size={22} aria-hidden="true" />
+      <label className="group block min-w-0 cursor-pointer rounded-lg border border-stone-200 bg-white p-3 shadow-soft transition-all hover:border-accent-400 hover:bg-accent-50/50 dark:border-stone-800 dark:bg-stone-950 dark:hover:border-accent-700 dark:hover:bg-accent-900/20 sm:p-5">
+        <div className="flex min-w-0 items-start gap-2 sm:items-center sm:gap-3">
+          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-accent-100 text-accent-700 transition-colors group-hover:bg-accent-200 group-hover:text-accent-800 dark:group-hover:bg-accent-800 dark:group-hover:text-accent-200 sm:h-11 sm:w-11">
+            <FileSpreadsheet size={20} aria-hidden="true" />
           </span>
-          <div>
-            <h2 className="text-lg font-semibold text-stone-950 dark:text-stone-50">
+          <div className="min-w-0">
+            <h2 className="text-sm font-semibold leading-snug text-stone-950 dark:text-stone-50 sm:text-lg">
               {t.spreadsheetTitle}
             </h2>
-            <p className="text-sm text-stone-500 dark:text-stone-400">
+            <p className="mt-1 text-xs leading-snug text-stone-500 dark:text-stone-400 sm:text-sm">
               {t.spreadsheetDescription}
             </p>
           </div>
         </div>
-        <div className="mt-5 rounded-md border border-dashed border-stone-300 bg-stone-50 px-4 py-6 text-sm text-stone-500 dark:border-stone-700 dark:bg-stone-900 dark:text-stone-400">
-          <span className="font-medium text-stone-700 dark:text-stone-200">
+        <div className="mt-3 rounded-md border border-dashed border-stone-300 bg-stone-50 px-3 py-4 text-xs leading-snug text-stone-500 dark:border-stone-700 dark:bg-stone-900 dark:text-stone-400 sm:mt-5 sm:px-4 sm:py-6 sm:text-sm">
+          <span className="block font-medium text-stone-700 dark:text-stone-200 sm:inline">
             {t.fileSelect}
           </span>
-          <span className="ml-2">{t.fileHint}</span>
+          <span className="mt-1 block sm:ml-2 sm:mt-0 sm:inline">{t.fileHint}</span>
         </div>
         <input
           type="file"
-          accept=".xlsx,.csv"
+          accept=".xlsx, .xls, .csv"
           className="sr-only"
           onChange={(event) => onSpreadsheetFiles(event.currentTarget.files)}
         />
