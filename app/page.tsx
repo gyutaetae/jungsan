@@ -352,7 +352,13 @@ export default function Home() {
             language={language}
           />
 
-          <section className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_360px] lg:items-start">
+          <section
+            className={`grid gap-4 lg:items-start ${
+              entries.length > 0
+                ? "lg:grid-cols-[minmax(0,1fr)_360px]"
+                : "lg:grid-cols-1"
+            }`}
+          >
             <div className="min-w-0">
               {entries.length > 0 ? (
                 <ReviewTable
