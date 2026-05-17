@@ -99,7 +99,7 @@ export function SummaryPanel({
   }
 
   return (
-    <aside className="rounded-lg border border-stone-200 bg-white p-5 shadow-soft dark:border-stone-800 dark:bg-stone-950">
+    <aside className="w-full rounded-lg border border-stone-200 bg-white p-5 shadow-soft dark:border-stone-800 dark:bg-stone-950">
       <h2 className="text-lg font-semibold text-stone-950 dark:text-stone-50">
         {t.title as string}
       </h2>
@@ -207,15 +207,15 @@ function SummaryRow({
   compact?: boolean;
 }) {
   return (
-    <div className="flex items-center justify-between gap-3">
-      <dt className={compact ? "text-xs text-stone-500 dark:text-stone-400" : "text-stone-500 dark:text-stone-400"}>
+    <div className="flex items-start justify-between gap-3">
+      <dt className={compact ? "min-w-0 text-xs text-stone-500 dark:text-stone-400" : "min-w-0 text-stone-500 dark:text-stone-400"}>
         {label}
       </dt>
       <dd
         className={
           accent
-            ? "font-semibold text-accent-700 dark:text-accent-300"
-            : "font-semibold text-stone-900 dark:text-stone-100"
+            ? "shrink-0 text-right font-semibold text-accent-700 dark:text-accent-300"
+            : "shrink-0 text-right font-semibold text-stone-900 dark:text-stone-100"
         }
       >
         {value}
