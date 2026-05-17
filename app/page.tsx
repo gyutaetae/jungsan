@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { AppHeader } from "../components/AppHeader";
 import { EmptyState } from "../components/EmptyState";
 import { ExportBar } from "../components/ExportBar";
@@ -45,6 +45,11 @@ export default function Home() {
     () => calculateTaxPrepSummary(totalIncomeAmount, entries),
     [entries, totalIncomeAmount],
   );
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+    setThemeMode(mediaQuery.matches ? "dark" : "light");
+  }, []);
 
   function addSampleData() {
     setEntries((currentEntries) => [
