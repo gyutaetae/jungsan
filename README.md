@@ -70,8 +70,6 @@
 - 간편장부소득금액계산서
 - 확인 필요 항목
 
-## 심사위원에게 보여줄 포인트
-
 ### 1. 실제 문제를 겨냥합니다
 
 소상공인과 프리랜서는 신고 버튼보다 신고 전 자료 정리에서 먼저 막힙니다. `정산`은 이 반복 업무를 줄입니다.
@@ -98,30 +96,3 @@ Supabase Postgres 확장 스키마로 사용자, 신고 단위, 업로드 묶음
 - OpenAI Responses API / Anthropic Claude Messages API
 - xlsx / exceljs
 - Vercel
-
-## 실행 방법
-
-```bash
-npm install
-npm run dev
-```
-
-AI 영수증 추출을 사용하려면 환경변수에 사용할 모델 제공자의 API 키를 설정해야 합니다.
-
-```env
-OPENAI_API_KEY=
-ANTHROPIC_API_KEY=
-```
-
-## 데이터베이스 확장
-
-현재 앱은 DB 없이도 시연 가능하지만, 수업 프로젝트용으로 Supabase Postgres 스키마를 추가했습니다.
-
-- 스키마: `supabase/migrations/202605170001_initial_schema.sql`
-- 발표용 쿼리: `supabase/queries/demo.sql`
-- 설계 설명: `docs/database.md`
-- 클라이언트 준비 코드: `lib/db/supabase.ts`
-
-## 한 문장으로
-
-`정산`은 세금 신고를 대신하지 않습니다. 대신 소상공인과 프리랜서가 신고 전에 가장 오래 붙잡히는 영수증 정리, 비용 분류, 장부 초안 작성, 홈택스 입력값 준비를 줄입니다.
