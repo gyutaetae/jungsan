@@ -3,7 +3,8 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: "정산",
-  description: "영수증과 거래내역을 검토 가능한 간편장부 초안으로 바꾸는 웹 MVP",
+  description:
+    "소상공인과 프리랜서를 위한 영수증·거래내역 정리 및 간편장부 초안 생성 웹 MVP",
   icons: {
     icon: "/favicon.png",
     shortcut: "/favicon.png",

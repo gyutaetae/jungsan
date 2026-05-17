@@ -1,4 +1,4 @@
-export type LedgerSource = "receipt" | "spreadsheet" | "sample";
+export type LedgerSource = "receipt" | "spreadsheet" | "camera" | "sample";
 
 export type LedgerStatus =
   | "queued"
@@ -50,7 +50,7 @@ export type ProcessingItem = {
   id: string;
   fileName: string;
   previewUrl?: string;
-  source: "receipt" | "spreadsheet";
+  source: "receipt" | "spreadsheet" | "camera";
   status: "queued" | "processing" | "done" | "failed";
   errorMessage?: string;
 };

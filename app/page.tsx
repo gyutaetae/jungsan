@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { AppHeader } from "../components/AppHeader";
+import { DatabaseSyncBar } from "../components/DatabaseSyncBar";
 import { EmptyState } from "../components/EmptyState";
 import { ExportBar } from "../components/ExportBar";
 import { InputCards } from "../components/InputCards";
@@ -18,6 +19,12 @@ import { createId } from "../lib/utils/ids";
 import type { LedgerEntry, ProcessingItem } from "../types/ledger";
 import type { Language, ThemeMode } from "../types/ui";
 
+type DatabaseStatus = {
+  configured: boolean;
+  connected: boolean;
+  message: string;
+};
+
 function isLedgerEntry(value: unknown): value is LedgerEntry {
   return (
     typeof value === "object" &&
@@ -32,6 +39,10 @@ function isLedgerEntryArray(value: unknown): value is LedgerEntry[] {
   return Array.isArray(value) && value.every(isLedgerEntry);
 }
 
+function hasErrorMessage(value: unknown): value is { error?: string } {
+  return typeof value === "object" && value !== null && "error" in value;
+}
+
 export default function Home() {
   const [entries, setEntries] = useState<LedgerEntry[]>([]);
   const [processingItems, setProcessingItems] = useState<ProcessingItem[]>([]);
@@ -39,6 +50,11 @@ export default function Home() {
   const [totalIncomeAmount, setTotalIncomeAmount] = useState(0);
   const [language, setLanguage] = useState<Language>("ko");
   const [themeMode, setThemeMode] = useState<ThemeMode>("light");
+  const [databaseStatus, setDatabaseStatus] = useState<DatabaseStatus | null>(
+    null,
+  );
+  const [databaseMessage, setDatabaseMessage] = useState<string | null>(null);
+  const [isDatabaseSyncing, setIsDatabaseSyncing] = useState(false);
 
   const summary = useMemo(() => calculateExpenseSummary(entries), [entries]);
   const taxPrepSummary = useMemo(
@@ -50,6 +66,110 @@ export default function Home() {
     const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
     setThemeMode(mediaQuery.matches ? "dark" : "light");
   }, []);
+
+  useEffect(() => {
+    void refreshDatabaseStatus();
+  }, []);
+
+  async function refreshDatabaseStatus() {
+    setIsDatabaseSyncing(true);
+    setDatabaseMessage(null);
+
+    try {
+      const response = await fetch("/api/database/status");
+      const payload = (await response.json()) as DatabaseStatus;
+      setDatabaseStatus(payload);
+      setDatabaseMessage(payload.message);
+    } catch {
+      setDatabaseStatus({
+        configured: false,
+        connected: false,
+        message: "DB 연결 상태를 확인하지 못했습니다.",
+      });
+      setDatabaseMessage("DB 연결 상태를 확인하지 못했습니다.");
+    } finally {
+      setIsDatabaseSyncing(false);
+    }
+  }
+
+  async function saveLedgerToDatabase() {
+    setIsDatabaseSyncing(true);
+    setDatabaseMessage("Supabase에 장부를 저장하는 중입니다.");
+
+    try {
+      const response = await fetch("/api/database/ledger", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ entries, totalIncomeAmount }),
+      });
+      const payload = (await response.json()) as
+        | { saved: boolean; entryCount: number }
+        | { error?: string };
+
+      const errorMessage = hasErrorMessage(payload) ? payload.error : undefined;
+
+      if (!response.ok || errorMessage) {
+        throw new Error(errorMessage ?? "DB 저장에 실패했습니다.");
+      }
+
+      const savedPayload = payload as { saved: boolean; entryCount: number };
+
+      setDatabaseStatus({
+        configured: true,
+        connected: true,
+        message: "Supabase 연결이 활성화되었습니다.",
+      });
+      setDatabaseMessage(`${savedPayload.entryCount}개 장부 행을 저장했습니다.`);
+    } catch (error) {
+      setDatabaseMessage(
+        error instanceof Error ? error.message : "DB 저장에 실패했습니다.",
+      );
+    } finally {
+      setIsDatabaseSyncing(false);
+    }
+  }
+
+  async function loadLedgerFromDatabase() {
+    setIsDatabaseSyncing(true);
+    setDatabaseMessage("Supabase에서 장부를 불러오는 중입니다.");
+
+    try {
+      const response = await fetch("/api/database/ledger");
+      const payload = (await response.json()) as
+        | { entries: LedgerEntry[]; totalIncomeAmount: number }
+        | { error?: string };
+
+      const errorMessage = hasErrorMessage(payload) ? payload.error : undefined;
+
+      if (!response.ok || errorMessage) {
+        throw new Error(errorMessage ?? "DB 불러오기에 실패했습니다.");
+      }
+
+      const loadedPayload = payload as {
+        entries: LedgerEntry[];
+        totalIncomeAmount: number;
+      };
+
+      setEntries(loadedPayload.entries);
+      setTotalIncomeAmount(loadedPayload.totalIncomeAmount);
+      setDatabaseStatus({
+        configured: true,
+        connected: true,
+        message: "Supabase 연결이 활성화되었습니다.",
+      });
+      setDatabaseMessage(
+        `${loadedPayload.entries.length}개 장부 행을 불러왔습니다.`,
+      );
+    } catch (error) {
+      setDatabaseMessage(
+        error instanceof Error ? error.message : "DB 불러오기에 실패했습니다.",
+      );
+    } finally {
+      setIsDatabaseSyncing(false);
+    }
+  }
 
   function addSampleData() {
     setEntries((currentEntries) => [
@@ -138,7 +258,14 @@ export default function Home() {
       return;
     }
 
-    const receiptFiles = Array.from(files);
+    await analyzeReceiptFiles(Array.from(files));
+  }
+
+  async function analyzeReceiptFiles(receiptFiles: File[]) {
+    if (receiptFiles.length === 0) {
+      return;
+    }
+
     const nextItems = receiptFiles.map((file) => ({
       id: createId("queue"),
       fileName: file.name,
@@ -342,6 +469,9 @@ export default function Home() {
 
           <InputCards
             onReceiptFiles={handleReceiptFiles}
+            onCameraReceiptFiles={(files) => {
+              void analyzeReceiptFiles(files);
+            }}
             onSpreadsheetFiles={handleSpreadsheetFiles}
             language={language}
           />
@@ -350,6 +480,16 @@ export default function Home() {
             items={processingItems}
             onUseSampleResult={useSampleResult}
             language={language}
+          />
+
+          <DatabaseSyncBar
+            status={databaseStatus}
+            isSyncing={isDatabaseSyncing}
+            message={databaseMessage}
+            entryCount={entries.length}
+            onRefreshStatus={refreshDatabaseStatus}
+            onSave={saveLedgerToDatabase}
+            onLoad={loadLedgerFromDatabase}
           />
 
           <section

@@ -8,6 +8,9 @@ node_modules/
 .next/
 .npm-cache/
 .codex/
+.agents/
+skills-lock.json
+supabase/.temp/
 tasks/
 scripts/
 prompts/

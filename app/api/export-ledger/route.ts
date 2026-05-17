@@ -7,7 +7,7 @@ export const runtime = "nodejs";
 
 const ledgerEntrySchema = z.object({
   id: z.string(),
-  source: z.enum(["receipt", "spreadsheet", "sample"]),
+  source: z.enum(["receipt", "spreadsheet", "camera", "sample"]),
   status: z.enum(["queued", "processing", "needs_review", "confirmed", "failed"]),
   transactionDate: z.string(),
   vendorName: z.string(),

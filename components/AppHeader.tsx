@@ -12,9 +12,9 @@ type AppHeaderProps = {
 
 const copy = {
   ko: {
-    title: "영수증 정리부터 장부 다운로드까지",
+    title: "소상공인·프리랜서 신고 준비 비서",
     description:
-      "사진이나 엑셀을 올리면 장부 초안을 만들어요.\n직접 검토하고 고친 뒤 간편장부와 신고 준비 요약을 내려받으세요.",
+      "영수증 사진이나 거래내역 엑셀을 올리면 장부 초안을 만들어요.\n직접 검토하고 고친 뒤 간편장부와 신고 준비 요약을 내려받으세요.",
     sample: "샘플 데이터로 보기",
     theme: "화면 모드 전환",
     language: "언어 전환",
@@ -22,9 +22,9 @@ const copy = {
     logoAlt: "정산",
   },
   en: {
-    title: "From receipts to ledger drafts",
+    title: "A tax prep workspace for small businesses and freelancers",
     description:
-      "Upload receipt images or spreadsheets,\nreview the draft rows, then download a simple ledger and tax prep summary.",
+      "Upload receipt images or transaction spreadsheets,\nreview the draft rows, then download a simple ledger and tax prep summary.",
     sample: "Load sample data",
     theme: "Toggle theme",
     language: "Toggle language",
@@ -55,7 +55,7 @@ export function AppHeader({
             priority
           />
         </div>
-        <h1 className="text-4xl font-semibold tracking-normal text-stone-950 dark:text-stone-50 sm:text-5xl">
+        <h1 className="text-3xl font-semibold tracking-normal text-stone-950 dark:text-stone-50 sm:text-4xl">
           {t.title}
         </h1>
         <p className="mt-6 max-w-2xl text-base leading-7 text-stone-500 dark:text-stone-400 sm:text-lg whitespace-pre-line">
