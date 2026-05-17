@@ -43,7 +43,7 @@ export function AppHeader({
   const t = copy[language];
 
   return (
-    <header className="relative flex flex-col gap-5 border-b border-stone-200 pb-4 pr-24 dark:border-stone-800 md:flex-row md:items-end md:justify-between md:pr-0">
+    <header className="relative flex flex-col gap-5 border-b border-stone-200 pb-4 dark:border-stone-800 md:flex-row md:items-end md:justify-between">
       <div className="max-w-3xl">
         <div className="mb-4 inline-flex h-12 w-12 items-center justify-center overflow-hidden rounded-2xl border border-stone-200 bg-accent-100 shadow-soft">
           <Image
@@ -62,7 +62,7 @@ export function AppHeader({
           {t.description}
         </p>
       </div>
-      <div className="absolute right-0 top-0 flex items-center gap-1.5 md:relative md:right-auto md:top-auto md:order-2">
+      <div className="fixed right-3 top-3 z-30 flex items-center gap-1.5 md:absolute md:right-0 md:top-0">
         <button
           type="button"
           onClick={onToggleTheme}
