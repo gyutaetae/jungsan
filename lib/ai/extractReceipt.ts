@@ -210,5 +210,11 @@ export async function extractReceipt(input: ExtractReceiptInput) {
     return extractWithAnthropic(input);
   }
 
+  if (!process.env.OPENAI_API_KEY) {
+    throw new Error(
+      "ANTHROPIC_API_KEY 또는 OPENAI_API_KEY가 설정되지 않았습니다.",
+    );
+  }
+
   return extractWithOpenAi(input);
 }
