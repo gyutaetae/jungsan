@@ -47,6 +47,6 @@ export async function POST(request: Request) {
         ? error.message
         : "영수증 분석 중 알 수 없는 오류가 발생했습니다.";
 
-    return errorResponse(message, message.includes("OPENAI_API_KEY") ? 503 : 502);
+    return errorResponse(message, message.includes("API_KEY") ? 503 : 502);
   }
 }

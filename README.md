@@ -84,7 +84,7 @@ AI가 모든 값을 단정하지 않습니다. 검토 카드에서 사용자가 
 - React
 - TypeScript
 - Tailwind CSS
-- OpenAI Responses API
+- OpenAI Responses API / Anthropic Claude Messages API
 - xlsx / exceljs
 - Vercel
 
