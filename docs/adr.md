@@ -18,11 +18,11 @@ Decision: HomeTax login, certificate handling, and automatic tax filing are out 
 
 Reason: They create policy, authentication, and reliability risks. The MVP should say "신고 준비 자동화", not "자동 신고".
 
-## 4. No Server Database
+## 4. Client-First, Supabase-Ready Persistence
 
-Decision: Do not use a server database or accounts.
+Decision: Keep the main demo usable without a server database or accounts, but provide a Supabase Postgres schema for database-class evaluation and future persistence.
 
-Reason: The demo should be fast to build, low-risk, and privacy-friendly. Uploaded files are processed transiently and not stored.
+Reason: The demo should remain fast, low-risk, and privacy-friendly. The database extension lets us explain normalization, constraints, indexes, RLS, and aggregate views without forcing account setup during the live MVP flow. Uploaded files are processed transiently by default; source file storage remains optional.
 
 ## 5. One Screen, Review Table First
 

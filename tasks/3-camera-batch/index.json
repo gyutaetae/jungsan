@@ -1,0 +1,30 @@
+{
+  "project": "정산",
+  "task": "camera-batch",
+  "prompt": "카메라로 여러 장 촬영 후 한번에 검토 테이블로 올리기",
+  "totalPhases": 4,
+  "created_at": "2026-05-17T18:31:19+0900",
+  "phases": [
+    {
+      "phase": 0,
+      "name": "docs-camera-flow",
+      "status": "completed",
+      "started_at": "2026-05-17T18:33:17+0900"
+    },
+    {
+      "phase": 1,
+      "name": "camera-component",
+      "status": "pending"
+    },
+    {
+      "phase": 2,
+      "name": "page-integration",
+      "status": "pending"
+    },
+    {
+      "phase": 3,
+      "name": "verify-hardening",
+      "status": "pending"
+    }
+  ]
+}
